@@ -393,6 +393,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 3638504164888052890, guid: 01d957f864c1038aea6081c3809c0281, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4076314670103501140, guid: 01d957f864c1038aea6081c3809c0281, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2110,7 +2114,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2606,7 +2610,7 @@ GameObject:
   - component: {fileID: 859503057}
   - component: {fileID: 859503058}
   m_Layer: 0
-  m_Name: DrivingCamera
+  m_Name: Main Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3676,7 +3680,7 @@ GameObject:
   - component: {fileID: 1273050136}
   - component: {fileID: 1273050140}
   m_Layer: 0
-  m_Name: Minimap Cam
+  m_Name: Minimap Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4272,7 +4276,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 1737559191}
   autoTargetPlayer: 0
-  moveSpeed: 5
+  moveSpeed: 10
   turnSpeed: 0.4
   turnsmoothing: 0.1
   tiltMax: 75
@@ -4391,7 +4395,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: cfc8d993b4cbf3245abbb614e57fd875, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5258,8 +5262,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.014855563}
   m_AnchorMax: {x: 1, y: 0.12014444}
-  m_AnchoredPosition: {x: 0.5, y: -2.7005005}
-  m_SizeDelta: {x: 0.7000122, y: 7.807007}
+  m_AnchoredPosition: {x: 0, y: -3.0964966}
+  m_SizeDelta: {x: -4.0308, y: 7.807}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1861577135
 MonoBehaviour:
@@ -5304,14 +5308,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 0.74213827, g: 0.74213827, b: 0.74213827, a: 0.3882353}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 709eb7544ba8e4c4e94a946a2351459b, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5984,14 +5988,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.59748423, g: 0.59748423, b: 0.59748423, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: cfc8d993b4cbf3245abbb614e57fd875, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1

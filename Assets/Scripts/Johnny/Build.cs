@@ -478,6 +478,7 @@ public class BuildSystem : MonoBehaviour
     */
     void BuildBlock(GameObject blockPrefab)
     {
+        if (ModeSwitcher.instance.currentMode != ModeSwitcher.Mode.Build) return;
         int count = BlockInventoryManager.instance.GetBlockCount(currentBlock);
         Debug.Log("build init");
         if (currentBlock == null || count <= 0) // No blocks remaining of this type
@@ -778,6 +779,7 @@ public class BuildSystem : MonoBehaviour
     */
     void UpdatePreview()
     {
+        if (ModeSwitcher.instance.currentMode != ModeSwitcher.Mode.Build) return;
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
         {
             return;
