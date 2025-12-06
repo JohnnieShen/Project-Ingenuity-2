@@ -1,6 +1,6 @@
 Shader "Custom/Outlines" {
     Properties {
-        _Thickness ("Outline Thickness px", Range(0, 3)) = 1
+        _Thickness ("Outline Thickness px", Range(0, 20)) = 1
         _Color("Outline Color", Color) = (1, 1, 1, 1)
         _OutlineMaxDistance ("Outline Max Distance", Float) = 40
     }
