@@ -582,6 +582,7 @@ public class BuildSystem : MonoBehaviour
                     // Debug.Log($"[BuildBlock] Intermediate newBlockWorldRotation (Euler): {newBlockWorldRotation.eulerAngles}");
 
                     newBlockWorldRotation *= Quaternion.Euler(0f, 180f, 0f);
+                    newBlockWorldRotation = new Quaternion(newBlockWorldRotation.z, newBlockWorldRotation.y, newBlockWorldRotation.x, newBlockWorldRotation.w);
                     // Debug.Log($"[BuildBlock] Final newBlockWorldRotation (Euler): {newBlockWorldRotation.eulerAngles}");
                 }
 
@@ -842,6 +843,7 @@ public class BuildSystem : MonoBehaviour
                     newBlockWorldRotation = toNormal_world * referenceTransform.rotation;
 
                     newBlockWorldRotation *= Quaternion.Euler(0f, 180f, 0f);
+                    newBlockWorldRotation = new Quaternion(newBlockWorldRotation.z, newBlockWorldRotation.y, newBlockWorldRotation.x, newBlockWorldRotation.w);
                 }
                 else
                 {
