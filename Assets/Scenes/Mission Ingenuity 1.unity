@@ -852,6 +852,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 113937050}
   m_CullTransparentMesh: 1
+--- !u!4 &162255282 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6956690515355897235, guid: 01d957f864c1038aea6081c3809c0281, type: 3}
+  m_PrefabInstance: {fileID: 62485112}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &296431912
 GameObject:
   m_ObjectHideFlags: 0
@@ -1344,7 +1349,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1419,7 +1424,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1980,7 +1985,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -3016,7 +3021,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0.1254902, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -3440,7 +3445,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -3489,7 +3494,7 @@ Transform:
   m_GameObject: {fileID: 1207317564}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 22.00016, z: 990.3}
+  m_LocalPosition: {x: 0, y: 22.00016, z: 994.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4102,6 +4107,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1379108819}
   - component: {fileID: 1379108820}
+  - component: {fileID: 1379108821}
   m_Layer: 0
   m_Name: Camera Rig
   m_TagString: Untagged
@@ -4144,15 +4150,19 @@ MonoBehaviour:
   turnsmoothing: 0.1
   tiltMax: 75
   tiltMin: 45
-  zoomSpeed: 3
+  zoomSpeed: 8
   minZoom: 5
   maxZoom: 30
   zoomSmoothFactor: 5
   terrainLayerMask:
     serializedVersion: 2
     m_Bits: 256
+  pivotMoveSpeed: 0.5
+  driveModePivotY: 4
+  minPivotY: -20
+  maxPivotY: 20
   aimTarget: {fileID: 1207317565}
-  commandModule: {fileID: 0}
+  commandModule: {fileID: 1737559191}
   rayCastLayers:
     serializedVersion: 2
     m_Bits: 4161
@@ -4163,6 +4173,40 @@ MonoBehaviour:
   pickUpDistance: 30
   pickupIconPanel: {fileID: 545982012}
   pickupIconImage: {fileID: 486295118}
+--- !u!114 &1379108821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1379108818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 962c2fc61c2b3ea4e9abd37d3612e692, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blockNameText: {fileID: 619849444}
+  blockDescriptionText: {fileID: 1576877728}
+  blockUIImage: {fileID: 315191784}
+  breakForce: 1000
+  shootingPoint: {fileID: 162255282}
+  buildCamera: {fileID: 859503055}
+  parent: {fileID: 856457731}
+  normalColor: {r: 1, g: 0, b: 0, a: 0}
+  highlightedColor: {r: 0, g: 0, b: 1, a: 0}
+  rayCastLayers:
+    serializedVersion: 2
+    m_Bits: 65
+  shieldLayer:
+    serializedVersion: 2
+    m_Bits: 2048
+  previewIgnoreLayers:
+    serializedVersion: 2
+    m_Bits: 128
+  previewMaterial: {fileID: 2100000, guid: 260cfbcaf4361b042b13bdce4b6820e9, type: 2}
+  commandModule: {fileID: 1737559191}
+  audioSource: {fileID: 1369968237}
+  audioClip: {fileID: 8300000, guid: a869d76d05071c24493e539e9cf5fe60, type: 3}
 --- !u!1 &1475300664
 GameObject:
   m_ObjectHideFlags: 0
@@ -4583,7 +4627,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1596752694
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4618,7 +4662,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -4991,7 +5035,7 @@ GameObject:
   - component: {fileID: 1917894346}
   - component: {fileID: 1917894345}
   - component: {fileID: 1917894344}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5248,7 +5292,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1927781932
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5485,7 +5529,7 @@ CanvasGroup:
   m_Enabled: 1
   m_Alpha: 1
   m_Interactable: 1
-  m_BlocksRaycasts: 1
+  m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
 --- !u!114 &2003576952
 MonoBehaviour:
@@ -5827,7 +5871,7 @@ Transform:
   m_GameObject: {fileID: 2111979334}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 4, z: 0}
+  m_LocalPosition: {x: 0, y: 4, z: 4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

@@ -1,4 +1,5 @@
 {
+    "version": 1,
     "name": "Mission Ingenuity",
     "maps": [
         {
@@ -27,7 +28,7 @@
                     "name": "Build",
                     "type": "Button",
                     "id": "3ac3c9fb-7713-4769-ac87-8a1dd60b1755",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -127,6 +128,15 @@
                     "type": "Button",
                     "id": "26eb3ca2-1eed-4611-b11e-492028d25f18",
                     "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RotateCamera",
+                    "type": "Button",
+                    "id": "76533ceb-902d-42a4-81b3-94ef36942f86",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -449,6 +459,17 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Scroll Down",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0d5c5f94-277a-4942-af3b-18550ab7d132",
+                    "path": "<Mouse>/middleButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "RotateCamera",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

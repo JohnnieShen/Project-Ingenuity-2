@@ -83,22 +83,10 @@ public class ModeSwitcher : MonoBehaviour
                     currentMode = Mode.Build;
                     SetMode(currentMode);
                     lastModeSwitchTime = Time.time;
-                    if(vehicleRoot != null)
-                    {
-                        originalVehiclePosition = vehicleRoot.position;
-                        originalVehicleRotation = vehicleRoot.localRotation;
-                    }
                     if (vehicleRoot != null)
                     {
                         StopAllCoroutines();
                         StartCoroutine(ElevateVehicle(buildModeHeight, elevateDuration));
-                    }
-                    if (player != null)
-                    {
-                        if(drivingCamera != null)
-                        {
-                            player.transform.position = drivingCamera.position;
-                        }
                     }
                     return;
                 }
@@ -149,26 +137,29 @@ public class ModeSwitcher : MonoBehaviour
     */
     public void SetMode(Mode mode)
     {
+        if (FreeCameraLook.instance != null)
+        {
+            FreeCameraLook.instance.SetBuildMode(mode == Mode.Build || mode == Mode.Craft);
+        }
+
         if (mode == Mode.Build)
         {
             buildArrow.SetActive(true);
+            cursorUI.SetActive(false);
             // Time.timeScale = 1f;
             if (buildUI != null) buildUI.SetActive(true);
             if (driveUI != null) driveUI.SetActive(false);
             if (craftUI != null) craftUI.SetActive(false);
             InputManager.instance.EnableBuildMap();
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            if (player != null)
-            {
-                player.SetActive(true);
-            }
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            if (player != null) player.SetActive(false);
             // if(buildCamera != null) buildCamera.gameObject.SetActive(true);
 
             // if(vehicle != null) vehicle.SetActive(false);
-            if(driveCameraPivot != null) driveCameraPivot.SetActive(false);
+            if (driveCameraPivot != null) driveCameraPivot.SetActive(true);
 
-            if(BlockManager.instance != null)
+            if (BlockManager.instance != null)
             {
                 BlockManager.instance.DisableVehiclePhysics();
             }
@@ -192,13 +183,16 @@ public class ModeSwitcher : MonoBehaviour
         else if (mode == Mode.Drive)
         {
             buildArrow.SetActive(false);
+            cursorUI.SetActive(true);
             // Time.timeScale = 1f;
             if (buildUI != null) buildUI.SetActive(false);
             if (driveUI != null) driveUI.SetActive(true);
             if (craftUI != null) craftUI.SetActive(false);
             InputManager.instance.EnableDriveMap();
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
             // if(vehicle != null) vehicle.SetActive(true);
-            if(driveCameraPivot != null) driveCameraPivot.SetActive(true);
+            if (driveCameraPivot != null) driveCameraPivot.SetActive(true);
             build.destroyPreviewBlock();
             if(player != null) player.SetActive(false);
             // if(buildCamera != null) buildCamera.gameObject.SetActive(false);

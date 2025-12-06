@@ -28,8 +28,8 @@ Material:
     m_Floats:
     - _FadeEnd: 40
     - _FadeStart: 20
-    - _OutlineMaxDistance: 30
-    - _Thickness: 2
+    - _OutlineMaxDistance: 100
+    - _Thickness: 3
     m_Colors:
     - _Color: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

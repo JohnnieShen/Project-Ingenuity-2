@@ -27,7 +27,13 @@ public class FreeCameraLook : Pivot {
 	[SerializeField] private LayerMask terrainLayerMask;
 	// [SerializeField] private float collisionOffset = 0.5f;
 
-	public Transform aimTarget;
+    [Header("Pivot Settings")]
+    [SerializeField] private float pivotMoveSpeed = 0.05f;
+    [SerializeField] private float driveModePivotY = 4f;
+    [SerializeField] private float minPivotY = -20f;
+    [SerializeField] private float maxPivotY = 20f;
+
+    public Transform aimTarget;
 	public Transform commandModule;
     public LayerMask rayCastLayers;
     public LayerMask shieldLayer;
@@ -55,11 +61,13 @@ public class FreeCameraLook : Pivot {
     private float _initialTilt;
     private float _initialYaw;
 
-	/* Awake is called when the script instance is being loaded.
+    private bool isInBuildMode = false;
+
+    /* Awake is called when the script instance is being loaded.
 	* It initializes the camera and pivot transforms, sets the target zoom, and checks for duplicate instances of the FreeCameraLook script.
 	* It also creates a new AimTarget GameObject if it is not assigned.
 	*/
-	protected override void Awake()
+    protected override void Awake()
 	{
 		base.Awake();
 
@@ -89,15 +97,23 @@ public class FreeCameraLook : Pivot {
 	*/
 	private void OnEnable()
     {
-        if (InputManager.instance != null && InputManager.instance.GetDriveShootAction() != null)
+        if (InputManager.instance != null)
         {
-            InputManager.instance.GetDriveShootAction().performed += OnFireStarted;
-            InputManager.instance.GetDriveShootAction().canceled  += OnFireCanceled;
+            if (InputManager.instance.GetDriveShootAction() != null)
+            {
+                InputManager.instance.GetDriveShootAction().performed += OnFireStarted;
+                InputManager.instance.GetDriveShootAction().canceled += OnFireCanceled;
+            }
+            if (InputManager.instance.GetDriveScrollAction() != null)
+            {
+                InputManager.instance.GetDriveScrollAction().performed += OnScrollPerformed;
+            }
+
+            if (InputManager.instance.GetBuildScrollAction() != null)
+            {
+                InputManager.instance.GetBuildScrollAction().performed += OnScrollPerformed;
+            }
         }
-		if (InputManager.instance != null && InputManager.instance.GetDriveScrollAction() != null)
-		{
-			InputManager.instance.GetDriveScrollAction().performed += OnScrollPerformed;
-		}
     }
 
 	/* OnDisable removes the listeners for the drive shoot and scroll actions from the InputManager.
@@ -106,23 +122,36 @@ public class FreeCameraLook : Pivot {
 	*/
     private void OnDisable()
     {
-        if (InputManager.instance != null && InputManager.instance.GetDriveShootAction() != null)
+        if (InputManager.instance != null)
         {
-            InputManager.instance.GetDriveShootAction().performed -= OnFireStarted;
-            InputManager.instance.GetDriveShootAction().canceled  -= OnFireCanceled;
+            if (InputManager.instance.GetDriveShootAction() != null)
+            {
+                InputManager.instance.GetDriveShootAction().performed -= OnFireStarted;
+                InputManager.instance.GetDriveShootAction().canceled -= OnFireCanceled;
+            }
+            if (InputManager.instance.GetDriveScrollAction() != null)
+            {
+                InputManager.instance.GetDriveScrollAction().performed -= OnScrollPerformed;
+            }
+
+            if (InputManager.instance.GetBuildScrollAction() != null)
+            {
+                InputManager.instance.GetBuildScrollAction().performed -= OnScrollPerformed;
+            }
         }
-		if (InputManager.instance != null && InputManager.instance.GetDriveScrollAction() != null)
-		{
-			InputManager.instance.GetDriveScrollAction().performed -= OnScrollPerformed;
-		}
     }
 
-	/* OnFireStarted is called when the drive shoot action is performed.
+    public void SetBuildMode(bool state)
+    {
+        isInBuildMode = state;
+    }
+
+    /* OnFireStarted is called when the drive shoot action is performed.
 	* It sets the isFiring variable to true, indicating that the player is firing.
 	* It also checks if the InputManager instance is not null and if the action is not null before setting the variable.
 	* Param 1: ctx - The input action context that contains information about the input event.
 	*/
-	void OnFireStarted(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
+    void OnFireStarted(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
     {
         isFiring = true;
     }
@@ -142,32 +171,48 @@ public class FreeCameraLook : Pivot {
 	// It also checks for mouse input and interacts with the game world by picking up blocks.
 	// It uses the InputManager instance to get the drive look and interact actions.
 	// It also checks for the pickup icon panel and updates it based on the hovered hull.
-	protected override	void Update ()
+	protected override void Update ()
 	{
 		base.Update();
 
-		HandleRotationMovement();
-		HandleZoom2();
-		UpdateTarget();
-		// if (lockCursor && Input.GetMouseButtonUp (0))
-		// {
-        //     Cursor.lockState = CursorLockMode.Confined;
-		// }
-		if (Input.GetMouseButtonDown(0))
+        if (!isInBuildMode)
         {
-            isFiring = true;
+            if (pivot != null)
+            {
+                pivot.localPosition = new Vector3(0f, driveModePivotY, 0f);
+            }
         }
-        if (Input.GetMouseButtonUp(0))
+        else
         {
-            isFiring = false;
+            if (pivot != null)
+            {
+                pivot.localPosition = new Vector3(0f, 5f, 0f);
+            }
         }
 
-        if (isFiring)
+        HandleRotationMovement();
+		HandleZoom2();
+		UpdateTarget();
+        // if (lockCursor && Input.GetMouseButtonUp (0))
+        // {
+        //     Cursor.lockState = CursorLockMode.Confined;
+        // }
+        if (!isInBuildMode)
         {
-            OnFire?.Invoke();
+            if (Input.GetMouseButtonDown(0)) isFiring = true;
+            if (Input.GetMouseButtonUp(0)) isFiring = false;
+            if (isFiring) OnFire?.Invoke();
         }
-		Vector3 centerScreen = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0f);
-		Ray forwardRay = cam.GetComponentInChildren<Camera>().ScreenPointToRay(centerScreen);
+        Ray forwardRay;
+        if (isInBuildMode)
+        {
+            forwardRay = cam.GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
+        }
+        else
+        {
+            Vector3 centerScreen = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0f);
+            forwardRay = cam.GetComponent<Camera>().ScreenPointToRay(centerScreen);
+        }
         Hull hoveredHull = FindHoveredHull(forwardRay);
 		if(pickupIconPanel != null) {
 			bool showPickupPanel = (hoveredHull != null);
@@ -188,28 +233,38 @@ public class FreeCameraLook : Pivot {
 		}
 	}
 
-	/* Follow is called to update the camera position based on the target's position.
+    /* Follow is called to update the camera position based on the target's position.
 	* It uses linear interpolation to smoothly move the camera towards the target position.
 	* Param 1: deltaTime - The time since the last frame, used for smooth movement.
 	*/
-	protected override void Follow (float deltaTime)
-	{
-		transform.position = Vector3.Lerp(transform.position, target.position, deltaTime * moveSpeed);
+    protected override void Follow(float deltaTime)
+    {
+        Transform center = commandModule != null ? commandModule : target;
+        if (center == null) return;
 
-	}
+        transform.position = Vector3.Lerp(transform.position, center.position, deltaTime * moveSpeed);
+    }
 
-	/* UpdateTarget is called to update the aim target position based on the camera's forward direction.
+    /* UpdateTarget is called to update the aim target position based on the camera's forward direction.
 	* It uses a raycast to check for collisions with the terrain or enemy blocks.
 	* If a collision is detected, it updates the aim target position to the hit point.
 	* If no collision is detected, it sets the aim target position to a point far away in the forward direction.
 	* It also draws a debug ray to visualize the raycast direction.
 	*/
-	private void UpdateTarget() 
+    private void UpdateTarget() 
 	{
-		Vector3 centerScreen = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0f);
-		Ray forwardRay = cam.GetComponent<Camera>().ScreenPointToRay(centerScreen);
-		// Ray forwardRay = cam.GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
-		Debug.DrawRay(forwardRay.origin, forwardRay.direction * 1000f, Color.red, 0.1f);
+        Ray forwardRay;
+        if (isInBuildMode)
+        {
+            forwardRay = cam.GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
+        }
+        else
+        {
+            Vector3 centerScreen = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0f);
+            forwardRay = cam.GetComponent<Camera>().ScreenPointToRay(centerScreen);
+        }
+        // Ray forwardRay = cam.GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
+        Debug.DrawRay(forwardRay.origin, forwardRay.direction * 1000f, Color.red, 0.1f);
 
 		//int aimLayer = LayerMask.NameToLayer("Aim");
 		//if (aimLayer == -1)
@@ -241,10 +296,26 @@ public class FreeCameraLook : Pivot {
 	*/
 	void HandleRotationMovement()
     {
+        bool allowRotation = true;
+
+        if (isInBuildMode)
+        {
+            if (!Input.GetMouseButton(2))
+            {
+                allowRotation = false;
+            }
+        }
+
+        if (!allowRotation) return;
+
         Vector2 lookVal = Vector2.zero;
-        if (InputManager.instance != null && InputManager.instance.GetDriveLookAction() != null)
+        if (InputManager.instance != null && InputManager.instance.GetDriveLookAction() != null && InputManager.instance.GetDriveLookAction().enabled)
         {
             lookVal = InputManager.instance.GetDriveLookAction().ReadValue<Vector2>();
+        }
+        else if (InputManager.instance != null && InputManager.instance.GetBuildLookAction() != null && InputManager.instance.GetBuildLookAction().enabled)
+        {
+            lookVal = InputManager.instance.GetBuildLookAction().ReadValue<Vector2>();
         }
 
         float x = lookVal.x;
@@ -269,29 +340,45 @@ public class FreeCameraLook : Pivot {
         pivot.localRotation = Quaternion.Euler(tiltAngle, 0f, 0f);
     }
 
-	/* OnScrollPerformed is called when the drive scroll action is performed.
+    /* OnScrollPerformed is called when the drive scroll action is performed.
 	* It reads the scroll value from the input action context and updates the target zoom based on the scroll value.
 	* It clamps the target zoom value between the minimum and maximum zoom values.
 	* Param 1: ctx - The input action context that contains information about the input event.
 	*/
     private void OnScrollPerformed(InputAction.CallbackContext ctx)
-	{
-		Vector2 scrollValue = ctx.ReadValue<Vector2>();
-		// Debug.Log("ScrollPerformed: " + scrollValue);
-		float scroll = scrollValue.y;
+    {
+        Vector2 scrollValue = ctx.ReadValue<Vector2>();
+        float scroll = scrollValue.y;
 
-		targetZoom -= scroll * zoomSpeed;
-		targetZoom = Mathf.Clamp(targetZoom, minZoom, maxZoom);
-	}
+        bool isAltHeld = Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt);
+        bool isShiftHeld = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 
-	/* HandleZoom is called to handle the camera zoom based on the target zoom value.
+        if (isInBuildMode && isAltHeld)
+        {
+            if (pivot != null)
+            {
+                float currentY = pivot.localPosition.y;
+                float newY = currentY + (scroll * pivotMoveSpeed);
+                newY = Mathf.Clamp(newY, minPivotY, maxPivotY);
+
+                pivot.localPosition = new Vector3(pivot.localPosition.x, newY, pivot.localPosition.z);
+            }
+        }
+        else if (!isInBuildMode || (isInBuildMode && isShiftHeld))
+        {
+            targetZoom -= scroll * zoomSpeed;
+            targetZoom = Mathf.Clamp(targetZoom, minZoom, maxZoom);
+        }
+    }
+
+    /* HandleZoom is called to handle the camera zoom based on the target zoom value.
 	* It uses linear interpolation to smoothly move the camera towards the target zoom value.
 	* It calculates the desired local position based on the current zoom value and the pivot transform.
 	* It performs a raycast to check for collisions with the terrain and updates the current zoom value based on the hit distance.
 	* It clamps the current zoom value between the minimum and maximum zoom values.
 	* It updates the camera local position based on the desired local position and the current zoom value.
 	*/
-	void HandleZoom()
+    void HandleZoom()
 	{
 		currentZoom = Mathf.Lerp(currentZoom, targetZoom, Time.deltaTime * zoomSmoothFactor);
 		Vector3 desiredLocalPos = new Vector3(0f, 0f, -currentZoom);
@@ -372,20 +459,22 @@ public class FreeCameraLook : Pivot {
 
         Destroy(hull.gameObject);
     }
-	public void ResetView()
+    public void ResetView()
     {
-        if (target == null) return;
+        Transform center = commandModule != null ? commandModule : target;
+        if (center == null) return;
 
-        transform.position = target.position;
-
-        lookAngle = target.eulerAngles.y;
+        lookAngle = center.eulerAngles.y;
         transform.rotation = Quaternion.Euler(0f, lookAngle, 0f);
 
         tiltAngle = 0f;
         pivot.localRotation = Quaternion.Euler(tiltAngle, 0f, 0f);
 
-        targetZoom  = _initialZoom;
+        targetZoom = _initialZoom;
         currentZoom = _initialZoom;
         cam.localPosition = new Vector3(0f, 0f, -currentZoom);
+
+        // Snap pivot onto the center
+        transform.position += center.position - pivot.position;
     }
 }

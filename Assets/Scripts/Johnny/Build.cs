@@ -4,6 +4,8 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+
 public class BuildSystem : MonoBehaviour
 {
     /*
@@ -27,7 +29,9 @@ public class BuildSystem : MonoBehaviour
  
     public Transform shootingPoint;
     GameObject blockObject;
- 
+
+    public Camera buildCamera;
+
     public Transform parent;
  
     public Color normalColor;
@@ -191,6 +195,16 @@ public class BuildSystem : MonoBehaviour
         UpdatePreview();
     }
 
+    private Ray GetBuildRay()
+    {
+        if (buildCamera != null)
+        {
+            Debug.Log("lol");
+            return buildCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+        }
+        return new Ray(shootingPoint.position, shootingPoint.forward);
+    }
+
     /* DestroyPreviewBlock is called to destroy the preview block if it exists.
     */
     public void destroyPreviewBlock()
@@ -210,6 +224,11 @@ public class BuildSystem : MonoBehaviour
     */
     private void OnBuildPerformed(InputAction.CallbackContext ctx)
     {
+        Debug.Log("build perform");
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
         if (currentBlock == null || currentBlock.BlockObject == null)
         {
             Debug.LogWarning("No block selected yet!");
@@ -224,6 +243,10 @@ public class BuildSystem : MonoBehaviour
     */
     private void OnRemovePerformed(InputAction.CallbackContext ctx)
     {
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
         DestroyBlock();
     }
 
@@ -421,6 +444,7 @@ public class BuildSystem : MonoBehaviour
     void BuildBlock(GameObject blockPrefab)
     {
         int count = BlockInventoryManager.instance.GetBlockCount(currentBlock);
+        Debug.Log("build init");
         if (currentBlock == null || count <= 0) // No blocks remaining of this type
         {
             string popupMsg = "No blocks remaining of this type!";
@@ -430,10 +454,13 @@ public class BuildSystem : MonoBehaviour
         }
         LayerMask combinedMask = rayCastLayers & ~shieldLayer;
         LayerMask combinedMask_preview = combinedMask & ~previewIgnoreLayers; //NOTWORKING NEED FIX
-        if (Physics.Raycast(shootingPoint.position, shootingPoint.forward, out RaycastHit hitInfo, Mathf.Infinity, combinedMask_preview)) // Raycast hit something that is a block
+
+        Ray ray = GetBuildRay();
+
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, combinedMask_preview)) // Raycast hit something that is a block
         {
             if (AimingAtPickupHullCanPickUp(hitInfo)) return;
-            // Debug.Log("raycast hitting"+hitInfo.collider.gameObject.name);
+             Debug.Log("raycast hitting"+hitInfo.collider.gameObject.name);
 
             // 1. Instantiating the block
 
@@ -653,7 +680,8 @@ public class BuildSystem : MonoBehaviour
     void DestroyBlock()
     {
         LayerMask combinedMask = rayCastLayers & ~shieldLayer;
-        if (Physics.Raycast(shootingPoint.position, shootingPoint.forward, out RaycastHit hitInfo, Mathf.Infinity, combinedMask))
+        Ray ray = GetBuildRay();
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, combinedMask))
         {
             Debug.Log("Raycast hit: " + hitInfo.collider.gameObject.name);
             if (hitInfo.transform.CompareTag("Block") || ((hitInfo.transform.CompareTag("EnemyBlock") && hitInfo.transform.GetComponent<Hull>().canPickup)))
@@ -711,11 +739,15 @@ public class BuildSystem : MonoBehaviour
     */
     void UpdatePreview()
     {
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
         // We'll do the same conversion steps for the preview
         LayerMask effectiveMask = rayCastLayers & ~shieldLayer;
         effectiveMask = effectiveMask & ~previewIgnoreLayers;
-
-        if (Physics.Raycast(shootingPoint.position, shootingPoint.forward, out RaycastHit hitInfo, Mathf.Infinity, effectiveMask))
+        Ray ray = GetBuildRay();
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, effectiveMask))
         {
             if (AimingAtPickupHullCanPickUp(hitInfo)) {
                 if (previewBlock != null) previewBlock.SetActive(false);
