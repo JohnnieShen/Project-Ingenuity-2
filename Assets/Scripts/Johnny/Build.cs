@@ -17,6 +17,9 @@ public class BuildSystem : MonoBehaviour
     */
 
     // public Block[] availableBuildingBlocks;
+
+    public static BuildSystem instance;
+
     private int currentRow = 0;
     private int currentColumn = 0;
  
@@ -74,16 +77,16 @@ public class BuildSystem : MonoBehaviour
         {
             InputManager.instance.GetBuildBuildAction().performed += OnBuildPerformed;
             InputManager.instance.GetBuildRemoveAction().performed += OnRemovePerformed;
-            InputManager.instance.GetBuildScrollAction().performed += OnScrollPerformed;
+            //InputManager.instance.GetBuildScrollAction().performed += OnScrollPerformed;
             InputManager.instance.GetBuildRotateAction().performed += OnRotatePerformed;
-            InputManager.instance.GetBuildScrollUpAction().performed += OnScrollUpPerformed;
-            InputManager.instance.GetBuildScrollDownAction().performed += OnScrollDownPerformed;
+            //InputManager.instance.GetBuildScrollUpAction().performed += OnScrollUpPerformed;
+            //InputManager.instance.GetBuildScrollDownAction().performed += OnScrollDownPerformed;
             var prev = InputManager.instance.GetBuildSwitchToLastAction();
             var next = InputManager.instance.GetBuildSwitchToNextAction();
             onPrevLevel = ctx => ChangeColumn(-1);
             onNextLevel = ctx => ChangeColumn(+1);
-            prev.performed += onPrevLevel;
-            next.performed += onNextLevel;
+            //prev.performed += onPrevLevel;
+            //next.performed += onNextLevel;
         }
         if (commandModule != null)
         {
@@ -105,14 +108,14 @@ public class BuildSystem : MonoBehaviour
         {
             InputManager.instance.GetBuildBuildAction().performed -= OnBuildPerformed;
             InputManager.instance.GetBuildRemoveAction().performed -= OnRemovePerformed;
-            InputManager.instance.GetBuildScrollAction().performed -= OnScrollPerformed;
+            //InputManager.instance.GetBuildScrollAction().performed -= OnScrollPerformed;
             InputManager.instance.GetBuildRotateAction().performed -= OnRotatePerformed;
-            InputManager.instance.GetBuildScrollUpAction().performed -= OnScrollUpPerformed;
-            InputManager.instance.GetBuildScrollDownAction().performed -= OnScrollDownPerformed;
+            //InputManager.instance.GetBuildScrollUpAction().performed -= OnScrollUpPerformed;
+            //InputManager.instance.GetBuildScrollDownAction().performed -= OnScrollDownPerformed;
             var prev = InputManager.instance.GetBuildSwitchToLastAction();
             var next = InputManager.instance.GetBuildSwitchToNextAction();
-            if (prev != null && onPrevLevel != null) prev.performed -= onPrevLevel;
-            if (next != null && onNextLevel != null) next.performed -= onNextLevel;
+            //if (prev != null && onPrevLevel != null) prev.performed -= onPrevLevel;
+            //if (next != null && onNextLevel != null) next.performed -= onNextLevel;
         }
     }
 
@@ -123,12 +126,44 @@ public class BuildSystem : MonoBehaviour
     */
     private void Awake()
     {
+        if (instance == null) instance = this;
+        else Debug.LogWarning("Multiple BuildSystems found!");
+
         // InitializeInventory();
         UpdateCurrentBlockFromMatrix();
         SetText();
         GameObject dummy = new GameObject("ReferenceTransform");
         referenceTransform = dummy.transform;
     }
+
+    public void SelectBlock(Block block)
+    {
+        var matrix = BlockInventoryManager.instance.inventoryMatrix;
+        if (matrix == null) return;
+
+        for (int r = 0; r < matrix.rowsCount; r++)
+        {
+            var row = matrix.rows[r];
+            if (row.columns == null) continue;
+
+            for (int c = 0; c < matrix.columnsCount; c++)
+            {
+                var entry = row.columns[c];
+                if (entry != null && entry.Block == block)
+                {
+                    currentRow = r;
+                    currentColumn = c;
+
+                    UpdateCurrentBlockFromMatrix();
+                    SetText();
+                    destroyPreviewBlock();
+                    return;
+                }
+            }
+        }
+        Debug.LogWarning($"Could not find block {block.BlockName} in the inventory matrix.");
+    }
+
     // void InitializeInventory()
     // {
     //     foreach (BlockInventory ib in availableBuildingBlocks)

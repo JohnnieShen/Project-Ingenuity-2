@@ -61,6 +61,8 @@ public class FreeCameraLook : Pivot {
     private float _initialTilt;
     private float _initialYaw;
 
+    private float scrollDistance = 0f;
+
     private bool isInBuildMode = false;
 
     /* Awake is called when the script instance is being loaded.
@@ -181,12 +183,15 @@ public class FreeCameraLook : Pivot {
             {
                 pivot.localPosition = new Vector3(0f, driveModePivotY, 0f);
             }
+            scrollDistance = 0f;
         }
         else
         {
             if (pivot != null)
             {
-                pivot.localPosition = new Vector3(0f, 5f, 0f);
+                float newY = 5f + scrollDistance;
+                newY = Mathf.Clamp(newY, minPivotY, maxPivotY);
+                pivot.localPosition = new Vector3(0f, newY, 0f);
             }
         }
 
@@ -351,20 +356,16 @@ public class FreeCameraLook : Pivot {
         float scroll = scrollValue.y;
 
         bool isAltHeld = Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt);
-        bool isShiftHeld = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        //bool isShiftHeld = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 
         if (isInBuildMode && isAltHeld)
         {
             if (pivot != null)
             {
-                float currentY = pivot.localPosition.y;
-                float newY = currentY + (scroll * pivotMoveSpeed);
-                newY = Mathf.Clamp(newY, minPivotY, maxPivotY);
-
-                pivot.localPosition = new Vector3(pivot.localPosition.x, newY, pivot.localPosition.z);
+                scrollDistance += (scroll * pivotMoveSpeed);
             }
         }
-        else if (!isInBuildMode || (isInBuildMode && isShiftHeld))
+        else if (!isInBuildMode || isInBuildMode)
         {
             targetZoom -= scroll * zoomSpeed;
             targetZoom = Mathf.Clamp(targetZoom, minZoom, maxZoom);
