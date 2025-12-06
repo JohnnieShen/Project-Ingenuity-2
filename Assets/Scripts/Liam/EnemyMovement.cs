@@ -112,7 +112,7 @@ public class EnemyMovement : MonoBehaviour
     // Param 2: distanceToTarget - The distance to the target position.
     void UpdateDriveInput(float targetSpeed, float distanceToTarget)
     {
-        float currentForwardSpeed = Vector3.Dot(rb.velocity, transform.forward); // Calculate the current forward speed.
+        float currentForwardSpeed = Vector3.Dot(rb.linearVelocity, transform.forward); // Calculate the current forward speed.
         float speedError = targetSpeed - currentForwardSpeed; // Calculate how far off the current speed is from the target speed.
         currentDriveInput = Mathf.Clamp(speedError * accelerationSharpness, -1f, 1f); // Clamp the drive input based on the speed error and the acceleration sharpness.
 
@@ -131,7 +131,7 @@ public class EnemyMovement : MonoBehaviour
         if (distanceToTarget < slowDownRadius) // If we are within the slow down radius, start breaking.
         {
             // Debug.Log("Applying braking");
-            Vector3 brakeDirection = -rb.velocity.normalized;
+            Vector3 brakeDirection = -rb.linearVelocity.normalized;
             float brakePower = Mathf.Lerp(1f, 0f, distanceToTarget / slowDownRadius);
             
             rb.AddForce(brakeDirection * brakeStrength * brakePower, ForceMode.Acceleration); 

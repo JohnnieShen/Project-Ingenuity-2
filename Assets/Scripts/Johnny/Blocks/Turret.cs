@@ -248,7 +248,7 @@ public class Turret : MonoBehaviour
             if (!isAI) VehicleResourceManager.Instance.OnTurretFired(isEnergy, ammoCost);
 
             // Bullet inherits velocity of turret block
-            Vector3 inheritedVelocity = this.GetComponent<Rigidbody>().velocity;
+            Vector3 inheritedVelocity = this.GetComponent<Rigidbody>().linearVelocity;
             projScript.velocity = inheritedVelocity + projectile.transform.forward * projScript.speed;
         }
         else

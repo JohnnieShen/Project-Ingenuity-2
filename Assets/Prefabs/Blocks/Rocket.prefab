@@ -61,9 +61,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -4683669308469848369, guid: 594ddaf2e0152be4ab8043e1a064ec58, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -4683669308469848369, guid: 594ddaf2e0152be4ab8043e1a064ec58, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 7b9a90acf59da45468e341b25ea7ac0f, type: 2}
+    - target: {fileID: -1439730007547781893, guid: 594ddaf2e0152be4ab8043e1a064ec58, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: -1439730007547781893, guid: 594ddaf2e0152be4ab8043e1a064ec58, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -81,9 +89,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -7387706064836869012, guid: 594ddaf2e0152be4ab8043e1a064ec58, type: 3}
     - target: {fileID: 7071182760956848314, guid: 594ddaf2e0152be4ab8043e1a064ec58, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7071182760956848314, guid: 594ddaf2e0152be4ab8043e1a064ec58, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: a924b40f4a60fad45b8de4487a4951ab, type: 2}
+    - target: {fileID: 7202271454713460447, guid: 594ddaf2e0152be4ab8043e1a064ec58, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7202271454713460447, guid: 594ddaf2e0152be4ab8043e1a064ec58, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -168,10 +184,10 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 24507584296602619}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -228,7 +244,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 1f2ea26fc2838b6ae8190ae17eccf8fd, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 1f2ea26fc2838b6ae8190ae17eccf8fd, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1

@@ -145,8 +145,8 @@ public class Wheel : MonoBehaviour
             }
 
             // Calculate physics
-            float springVel = Vector3.Dot(springDir, rigidBody.velocity);
-            float steeringVel = Vector3.Dot(steeringDir, rigidBody.velocity);
+            float springVel = Vector3.Dot(springDir, rigidBody.linearVelocity);
+            float steeringVel = Vector3.Dot(steeringDir, rigidBody.linearVelocity);
             
             float desiredVelChange = -steeringVel * tireGripFactor;
             float desiredAccel = desiredVelChange / Time.fixedDeltaTime;
@@ -178,7 +178,7 @@ public class Wheel : MonoBehaviour
         float forwardSpeed;
         if (isGrounded)
         {
-            forwardSpeed = Vector3.Dot(rigidBody.velocity, transform.forward);
+            forwardSpeed = Vector3.Dot(rigidBody.linearVelocity, transform.forward);
         }
         else
         {

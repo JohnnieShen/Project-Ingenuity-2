@@ -179,57 +179,109 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -6902573867230041995, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -6902573867230041995, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: a924b40f4a60fad45b8de4487a4951ab, type: 2}
+    - target: {fileID: -4718040791104185828, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -4683669308469848369, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: -4683669308469848369, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 7b9a90acf59da45468e341b25ea7ac0f, type: 2}
+    - target: {fileID: -1439730007547781893, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: -1439730007547781893, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: a924b40f4a60fad45b8de4487a4951ab, type: 2}
     - target: {fileID: 919132149155446097, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
       propertyPath: m_Name
-      value: nose_cone2
+      value: Nose Cone
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
       propertyPath: m_TagString
       value: Block
       objectReference: {fileID: 0}
     - target: {fileID: 1129496810705857465, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1129496810705857465, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: a924b40f4a60fad45b8de4487a4951ab, type: 2}
+    - target: {fileID: 1746654310787607633, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1746654310787607633, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: a924b40f4a60fad45b8de4487a4951ab, type: 2}
     - target: {fileID: 3280927520727180574, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3280927520727180574, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: a924b40f4a60fad45b8de4487a4951ab, type: 2}
+    - target: {fileID: 6917532131766228550, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 6917532131766228550, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: a924b40f4a60fad45b8de4487a4951ab, type: 2}
     - target: {fileID: 6944656104360116776, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6944656104360116776, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: a924b40f4a60fad45b8de4487a4951ab, type: 2}
+    - target: {fileID: 7071182760956848314, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7071182760956848314, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: a924b40f4a60fad45b8de4487a4951ab, type: 2}
     - target: {fileID: 7202271454713460447, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7202271454713460447, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: a924b40f4a60fad45b8de4487a4951ab, type: 2}
     - target: {fileID: 7743480366618694112, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7743480366618694112, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: a924b40f4a60fad45b8de4487a4951ab, type: 2}
+    - target: {fileID: 8089062573417005363, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8089062573417005363, guid: 9d9136e09e5ea134686073cf75143fad, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -292,10 +344,10 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4479673081621953131}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -331,6 +383,8 @@ MonoBehaviour:
   canPickup: 0
   sourceBlock: {fileID: 11400000, guid: 23a850e552c9ef243b0025b0c265a944, type: 2}
   isPreview: 0
+  audioSource: {fileID: 0}
+  audioClip: {fileID: 0}
 --- !u!114 &2317602128591158893
 MonoBehaviour:
   m_ObjectHideFlags: 0
