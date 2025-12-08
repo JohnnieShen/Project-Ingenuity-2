@@ -182,6 +182,7 @@ public class Turret : MonoBehaviour
     {
         if (!this.enabled) 
             return;
+        CheckIfBlocked();
         Hull hull = GetComponent<Hull>();
         if (hull != null && hull.canPickup) // If the turret is not connected to the core, don't fire.
             return;
@@ -322,39 +323,62 @@ public class Turret : MonoBehaviour
         }
 
         Ray ray = new Ray(shootPoint.position, shootPoint.forward);
-        if (Physics.Raycast(ray, out RaycastHit hit, checkDistance))
+
+        RaycastHit[] hits = Physics.RaycastAll(ray, checkDistance);
+
+        System.Array.Sort(hits, (x, y) => x.distance.CompareTo(y.distance));
+
+        bool obstacleFound = false;
+
+        foreach (RaycastHit hit in hits)
         {
-            // If the turret is not AI, check if the object hit is a block or core, if it is, set isBlocked to true.
-            if (!isAI) {
-                // Debug.Log("Hit object: " + hit.collider.name);
-                Debug.DrawRay(ray.origin, ray.direction * checkDistance, Color.red);
-                if (hit.collider.CompareTag("Block")||hit.collider.CompareTag("Core"))
+            if (hit.transform.IsChildOf(this.transform))
+            {
+                Debug.Log("pass");
+                continue;
+            }
+
+            if (!isAI)
+            {
+                if (hit.transform.gameObject.CompareTag("Block") || hit.transform.gameObject.CompareTag("Core"))
                 {
-                    if (blockedLine != null)
-                    {
-                        blockedLine.enabled = true;
-                        blockedLine.positionCount = 2;
-                        blockedLine.SetPosition(0, shootPoint.position);
-                        blockedLine.SetPosition(1, hit.point);
-                    }
-                    isBlocked = true;
+                    HandleBlockedState(hit);
+                    obstacleFound = true;
                     return;
                 }
             }
             else
             {
-                // If the turret is AI, check if the object hit is an enemy block, if it is, set isBlocked to true.
                 if (hit.collider.CompareTag("EnemyBlock"))
                 {
-                    isBlocked = true;
-                    return;
+                    HandleBlockedState(hit);
+                    obstacleFound = true;
+                    return; // Stop checking, we found a block
                 }
             }
+
+            break;
         }
-        // If the raycast doesn't hit anything, set isBlocked to false.
-        isBlocked = false;
+
+        // If loop finishes (or breaks) without finding a blocking friend:
+        if (!obstacleFound)
+        {
+            isBlocked = false;
+            if (blockedLine != null) blockedLine.enabled = false;
+        }
+    }
+
+    // Helper to draw the line and set state
+    private void HandleBlockedState(RaycastHit hit)
+    {
         if (blockedLine != null)
-            blockedLine.enabled = false;
+        {
+            blockedLine.enabled = true;
+            blockedLine.positionCount = 2;
+            blockedLine.SetPosition(0, shootPoint.position);
+            blockedLine.SetPosition(1, hit.point);
+        }
+        isBlocked = true;
     }
 
     /* Set the aim accuracy for AI turrets.
