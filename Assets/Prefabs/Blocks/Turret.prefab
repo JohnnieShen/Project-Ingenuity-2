@@ -5725,6 +5725,7 @@ MonoBehaviour:
   - {fileID: 6513803658767753251}
   - {fileID: 2343672454876531094}
   - {fileID: 1423184359962775420}
+  aimTarget: {fileID: 0}
   shootPoint: {fileID: 3142191892951490519}
   playerProjectilePrefab: {fileID: 7899788722775472648, guid: 1d3b4cb9e56d61146a4e618303895ccd, type: 3}
   enemyProjectilePrefab: {fileID: 6708683079509076862, guid: 7e323d06d51ae0e408b1147ce3c976cc, type: 3}
@@ -5732,6 +5733,7 @@ MonoBehaviour:
   ballisticDamage: 10
   energyDamage: 1
   magazineSize: 10
+  turnSpeed: 5
   muzzleFlash: {fileID: 0}
   muzzleSpark: {fileID: 8169501708824361396}
   gunAudioSource: {fileID: 5230295931780466664}
@@ -5783,8 +5785,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.9307612, y: 1.8112093, z: 1.9402231}
-  m_Center: {x: -0.03560084, y: -0.16922575, z: 0.0036104321}
+  m_Size: {x: 1.741456, y: 1.8112093, z: 1.7768154}
+  m_Center: {x: -0.011904836, y: -0.16922575, z: 0.0071462393}
 --- !u!54 &1785506366642487863
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5958,7 +5960,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 18747.3
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0

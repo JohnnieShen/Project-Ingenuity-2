@@ -23,9 +23,9 @@ public class Turret : MonoBehaviour
     [SerializeField] private List<MultiAimConstraint> aimConstraints = new List<MultiAimConstraint>();
 
     // The target that the turret will aim at, this will be passed into the MultiAimConstraint components to use with inverse kinematics.
-    private Transform aimTarget;
+    public Transform aimTarget;
     [Header("Shooting Settings")]
-    [SerializeField] private Transform shootPoint;
+    public Transform shootPoint;
     private GameObject projectilePrefab;
     [SerializeField] private GameObject playerProjectilePrefab;
     [SerializeField] private GameObject enemyProjectilePrefab;
@@ -34,6 +34,10 @@ public class Turret : MonoBehaviour
     [SerializeField] private float ballisticDamage = 10f;
     [SerializeField] private float energyDamage = 10f;
     [SerializeField] private int magazineSize = 5;
+    [Header("Aim Settings")]
+    [SerializeField] private float turnSpeed = 15f;
+    public float aimTolerance = 5f;
+    private Transform smoothAimPoint;
     [Header("Visual Effects")]
     [SerializeField] private ParticleSystem muzzleFlash;
     [SerializeField] private ParticleSystem muzzleSpark;
@@ -82,16 +86,21 @@ public class Turret : MonoBehaviour
             aimTarget = FreeCameraLook.instance?.aimTarget;
             isAI = false;
         }
-        if (aimTarget == null)
+        if (aimTarget != null)
         {
-            Debug.LogWarning("Turret target not assigned in FreeCameraLook or FreeCameraLook instance is missing.");
+            GameObject ghostObj = new GameObject(gameObject.name + "_SmoothTarget");
+            smoothAimPoint = ghostObj.transform;
+            smoothAimPoint.position = aimTarget.position;
+        }
+        else
+        {
+            Debug.LogWarning("Turret aimTarget is null!");
             return;
         }
 
         foreach (MultiAimConstraint constraint in aimConstraints)
         {
-            //For each MultiAimConstraint, set the target to aimTarget.
-            SetConstraintTarget(constraint, aimTarget);
+            SetConstraintTarget(constraint, smoothAimPoint);
         }
         // Rebuild the Rig because we changed its parameters.
         RigBuilder rigs = GetComponent<RigBuilder>();
@@ -109,7 +118,15 @@ public class Turret : MonoBehaviour
         // Choose bullet prefab for player or AI
         projectilePrefab = isAI ? enemyProjectilePrefab : playerProjectilePrefab;
     }
-    
+
+    void OnDestroy()
+    {
+        if (smoothAimPoint != null)
+        {
+            Destroy(smoothAimPoint.gameObject);
+        }
+    }
+
     /* Disable aiming constraints by setting their weight to 0.
     * This is used when the turret is not connected to the core
     */
@@ -151,6 +168,7 @@ public class Turret : MonoBehaviour
         }
         if (aimTarget == null)
             return;
+        smoothAimPoint.position = Vector3.Lerp(smoothAimPoint.position, aimTarget.position, Time.deltaTime * turnSpeed);
         CheckIfBlocked();
     }
 
@@ -188,7 +206,14 @@ public class Turret : MonoBehaviour
             return;
         if (isReloading) // If the turret is reloading, don't fire.
             return;
-
+        if (shootPoint != null && aimTarget != null)
+        {
+            Vector3 dirToTarget = (aimTarget.position - shootPoint.position).normalized;
+            if (Vector3.Angle(shootPoint.forward, dirToTarget) > aimTolerance)
+            {
+                return;
+            }
+        }
         if (VehicleResourceManager.Instance != null)
         {
             if (isEnergy)

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 public class ModeSwitcher : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class ModeSwitcher : MonoBehaviour
     public BuildSystem build;
     public enum Mode { Build, Drive , Craft };
     public Mode currentMode = Mode.Drive;
+
+    public event Action<Mode, Mode> OnModeChanged;
 
     public GameObject player;
 
@@ -71,6 +74,7 @@ public class ModeSwitcher : MonoBehaviour
     {
         if (!canManuallySwitchMode || Time.time - lastModeSwitchTime < modeSwitchCooldown)
             return;
+
         if (canManuallySwitchMode)
         {
             bool buildSwapTriggered = InputManager.instance.GetBuildSwapModeAction() != null && InputManager.instance.GetBuildSwapModeAction().triggered;
@@ -80,8 +84,9 @@ public class ModeSwitcher : MonoBehaviour
             {
                 if (currentMode == Mode.Drive)
                 {
-                    currentMode = Mode.Build;
-                    SetMode(currentMode);
+                    // Refactored: Call SetMode directly. Let SetMode handle the assignment.
+                    SetMode(Mode.Build);
+
                     lastModeSwitchTime = Time.time;
                     if (vehicleRoot != null)
                     {
@@ -92,24 +97,19 @@ public class ModeSwitcher : MonoBehaviour
                 }
                 else if (currentMode == Mode.Build)
                 {
-                    currentMode = Mode.Drive;
-                    SetMode(currentMode);
-                    // if (vehicleRoot != null)
-                    // {
-                    //     StopAllCoroutines();
-                    //     vehicleRoot.position = originalVehiclePosition;
-                    //     vehicleRoot.localRotation = originalVehicleRotation;
-                    // }
+                    // Refactored: Call SetMode directly.
+                    SetMode(Mode.Drive);
+
                     lastModeSwitchTime = Time.time;
                     return;
                 }
             }
         }
-        if (canManuallySwitchMode && currentMode == Mode.Build){
+        if (canManuallySwitchMode && currentMode == Mode.Build)
+        {
             if (InputManager.instance.GetBuildMenuAction() != null && InputManager.instance.GetBuildMenuAction().triggered)
             {
-                currentMode = Mode.Craft;
-                SetMode(currentMode);
+                SetMode(Mode.Craft);
                 lastModeSwitchTime = Time.time;
                 return;
             }
@@ -118,13 +118,11 @@ public class ModeSwitcher : MonoBehaviour
         {
             if ((InputManager.instance.GetUIMenuAction() != null && InputManager.instance.GetUIMenuAction().triggered) || InputManager.instance.GetUIEscapeAction() != null && InputManager.instance.GetUIEscapeAction().triggered)
             {
-                currentMode = Mode.Build;
-                SetMode(currentMode);
+                SetMode(Mode.Build);
+
                 if (build != null)
-                build.RefreshSelection();
+                    build.RefreshSelection();
                 lastModeSwitchTime = Time.time;
-                //Cursor.lockState = CursorLockMode.Locked;
-                //Cursor.visible = false;
                 return;
             }
         }
@@ -135,14 +133,18 @@ public class ModeSwitcher : MonoBehaviour
     * It also handles the visibility of the build arrow and the elevation of the vehicle when switching to Build mode.
     * Param 1: mode - The mode to be set (Build, Drive, or Craft).
     */
-    public void SetMode(Mode mode)
+    public void SetMode(Mode newMode)
     {
+        // Capture previous mode before changing
+        Mode previousMode = currentMode;
+        currentMode = newMode;
+
         if (FreeCameraLook.instance != null)
         {
-            FreeCameraLook.instance.SetBuildMode(mode == Mode.Build || mode == Mode.Craft);
+            FreeCameraLook.instance.SetBuildMode(currentMode == Mode.Build || currentMode == Mode.Craft);
         }
 
-        if (mode == Mode.Build)
+        if (currentMode == Mode.Build)
         {
             buildArrow.SetActive(true);
             cursorUI.SetActive(false);
@@ -154,33 +156,24 @@ public class ModeSwitcher : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             if (player != null) player.SetActive(false);
-            // if(buildCamera != null) buildCamera.gameObject.SetActive(true);
 
-            // if(vehicle != null) vehicle.SetActive(false);
             if (driveCameraPivot != null) driveCameraPivot.SetActive(true);
 
             if (BlockManager.instance != null)
             {
                 BlockManager.instance.DisableVehiclePhysics();
             }
-            // if (vehicleRoot != null)
-            // {
-            //     StopAllCoroutines();
-            //     StartCoroutine(ElevateVehicle(buildModeHeight, elevateDuration));
-            // }
+
             if (EnemyBlockManager.instance != null)
             {
                 foreach (EnemyAI enemy in EnemyBlockManager.instance.GetEnemyVehicles())
                 {
-                    if (enemy != null)
-                    {
-                        enemy.enabled = false;
-                    }
+                    if (enemy != null) enemy.enabled = false;
                 }
             }
         }
         // Vice versa
-        else if (mode == Mode.Drive)
+        else if (currentMode == Mode.Drive)
         {
             buildArrow.SetActive(false);
             cursorUI.SetActive(true);
@@ -191,12 +184,12 @@ public class ModeSwitcher : MonoBehaviour
             InputManager.instance.EnableDriveMap();
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-            // if(vehicle != null) vehicle.SetActive(true);
+
             if (driveCameraPivot != null) driveCameraPivot.SetActive(true);
-            build.destroyPreviewBlock();
-            if(player != null) player.SetActive(false);
-            // if(buildCamera != null) buildCamera.gameObject.SetActive(false);
-            if(BlockManager.instance != null)
+            if (build != null) build.destroyPreviewBlock();
+            if (player != null) player.SetActive(false);
+
+            if (BlockManager.instance != null)
             {
                 BlockManager.instance.EnableVehiclePhysics();
             }
@@ -204,13 +197,11 @@ public class ModeSwitcher : MonoBehaviour
             {
                 foreach (EnemyAI enemy in EnemyBlockManager.instance.GetEnemyVehicles())
                 {
-                    if (enemy != null)
-                    {
-                        enemy.enabled = true;
-                    }
+                    if (enemy != null) enemy.enabled = true;
                 }
             }
-        } else if (mode == Mode.Craft)
+        }
+        else if (currentMode == Mode.Craft)
         {
             buildArrow.SetActive(true);
             // Time.timeScale = 0f;
@@ -221,6 +212,9 @@ public class ModeSwitcher : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
+
+        // Emit the event after all logic is handled
+        OnModeChanged?.Invoke(previousMode, currentMode);
     }
 
     /* ElevateVehicle is a coroutine that smoothly elevates the vehicle to a target height over a specified duration.
