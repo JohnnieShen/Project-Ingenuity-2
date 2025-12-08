@@ -562,32 +562,65 @@ public class BuildSystem : MonoBehaviour
                 Quaternion newBlockWorldRotation = Quaternion.identity;
                 if (isSideSurface)
                 {
-                    Vector3 hitNormal = hitInfo.normal;
-                    // Debug.Log($"[BuildBlock] Raw hitNormal: {hitNormal}");
+                    // 1. Convert World Normal to Local Normal (relative to the vehicle)
+                    // This fixes the "toe-in" issue by ignoring World rotation
+                    Vector3 localHitNormal = referenceTransform.InverseTransformDirection(hitInfo.normal);
 
-                    Vector3 snappedNormal = new Vector3(
-                        Mathf.Abs(hitNormal.x) > 0.9f ? Mathf.Sign(hitNormal.x) : 0f,
-                        Mathf.Abs(hitNormal.y) > 0.9f ? Mathf.Sign(hitNormal.y) : 0f,
-                        Mathf.Abs(hitNormal.z) > 0.9f ? Mathf.Sign(hitNormal.z) : 0f
+                    // 2. Snap to the nearest LOCAL grid axis (e.g. Local Right, Local Forward)
+                    Vector3 localSnappedNormal = new Vector3(
+                        Mathf.Abs(localHitNormal.x) > 0.9f ? Mathf.Sign(localHitNormal.x) : 0f,
+                        Mathf.Abs(localHitNormal.y) > 0.9f ? Mathf.Sign(localHitNormal.y) : 0f,
+                        Mathf.Abs(localHitNormal.z) > 0.9f ? Mathf.Sign(localHitNormal.z) : 0f
                     );
-                    snappedNormal.Normalize();
-                    // Debug.Log($"[BuildBlock] Snapped hitNormal: {snappedNormal}");
+                    localSnappedNormal.Normalize();
 
-                    Vector3 blockAttachDir_world = referenceTransform.TransformDirection(currentBlock.attachDirection);
-                    // Debug.Log($"[BuildBlock] currentBlock.attachDirection: {currentBlock.attachDirection} -> blockAttachDir_world: {blockAttachDir_world}");
+                    Quaternion targetLocalRotation = Quaternion.identity;
 
-                    Quaternion toNormal_world = Quaternion.FromToRotation(blockAttachDir_world, snappedNormal);
-                    // Debug.Log($"[BuildBlock] toNormal_world (Euler): {toNormal_world.eulerAngles}");
+                    // 3. Determine Rotation Logic based on Connection Axis
+                    bool isYAxisConnection = Mathf.Abs(currentBlock.attachDirection.y) > 0.9f;
 
-                    newBlockWorldRotation = toNormal_world * referenceTransform.rotation;
-                    // Debug.Log($"[BuildBlock] Intermediate newBlockWorldRotation (Euler): {newBlockWorldRotation.eulerAngles}");
-
-                    newBlockWorldRotation *= Quaternion.Euler(0f, 180f, 0f);
-                    if (currentBlock.isSideMountable && !currentBlock.isTopMountable)
+                    if (isYAxisConnection && !currentBlock.isTopMountable)
                     {
-                        newBlockWorldRotation = new Quaternion(newBlockWorldRotation.z, newBlockWorldRotation.y, newBlockWorldRotation.x, newBlockWorldRotation.w);
+                        // Rolling Axis: Align local Z with Vehicle's Local Forward (0,0,1)
+                        Vector3 targetLocalZ = Vector3.forward;
+
+                        // Connection Axis: Align local Y to point INTO the wall
+                        // If connecting via Top (y=1), Top points into wall (-normal)
+                        // If connecting via Bottom (y=-1), Bottom points into wall, so Top points OUT (+normal)
+                        Vector3 targetLocalY = (currentBlock.attachDirection.y > 0) ? -localSnappedNormal : localSnappedNormal;
+
+                        // Create rotation from these local vectors
+                        targetLocalRotation = Quaternion.LookRotation(targetLocalZ, targetLocalY);
                     }
-                    // Debug.Log($"[BuildBlock] Final newBlockWorldRotation (Euler): {newBlockWorldRotation.eulerAngles}");
+                    else
+                    {
+                        if (isYAxisConnection)
+                        {
+                            // LookRotation(forward, up):
+                            // Set Forward (Z) to World Up.
+                            // Set Up (Y) to point Into Wall.
+                            targetLocalRotation = Quaternion.LookRotation(Vector3.up, localSnappedNormal);
+                        }
+                        else
+                        {
+                            // Standard logic for Back-connected blocks (Armor plates)
+                            Quaternion toNormal = Quaternion.FromToRotation(currentBlock.attachDirection, -localSnappedNormal);
+                            targetLocalRotation = toNormal;
+
+                            // Upright Correction: Keep the block's "Up" aligned with Vehicle's "Up"
+                            if (currentBlock.isSideMountable)
+                            {
+                                Vector3 projectedUp = Vector3.ProjectOnPlane(Vector3.up, localSnappedNormal).normalized;
+                                if (projectedUp != Vector3.zero)
+                                {
+                                    targetLocalRotation = Quaternion.LookRotation(targetLocalRotation * Vector3.forward, projectedUp);
+                                }
+                            }
+                        }
+                    }
+
+                    // 4. Convert back to World Rotation
+                    newBlockWorldRotation = referenceTransform.rotation * targetLocalRotation;
                 }
 
                 else
@@ -628,44 +661,40 @@ public class BuildSystem : MonoBehaviour
                         );
                         Vector3Int neighborPos = spawnPosInt + offsetInModuleInt; // Calculate the position of the neighbor block
                         // Debug.Log("For block " + currentBlock.BlockName + "Checking neighbor at: " + neighborPos + " for connection offset: " + offset);
-                        if (BlockManager.instance != null && BlockManager.instance.TryGetBlockAt(neighborPos, out Rigidbody neighborRb)) // If neighbor exist
+                        if (BlockManager.instance != null && BlockManager.instance.TryGetBlockAt(neighborPos, out Rigidbody neighborRb))
                         {
-                            // Debug.Log("Neighbor found at " + neighborPos + " for connection offset: " + offset);
-                            if (neighborRb != null) {
-                                Hull neighborHull = neighborRb.GetComponent<Hull>();
-                                if (neighborHull != null)
+                            Hull neighborHull = neighborRb.GetComponent<Hull>();
+                            if (neighborHull != null)
+                            {
+                                // gridOffset: direction from neighbor -> new block, in GRID / module space
+                                Vector3Int gridOffset = spawnPosInt - neighborPos;
+                                Vector3 gridOffsetVec = (Vector3)gridOffset;
+
+                                // Rotation of neighbor in GRID space (same space as referenceTransform)
+                                // worldRot = neighborRb.transform.rotation
+                                // gridRot maps neighbor local -> grid
+                                Quaternion neighborGridRot = Quaternion.Inverse(referenceTransform.rotation) * neighborRb.transform.rotation;
+
+                                // Convert grid offset into neighbor-local offset
+                                Vector3 neighborLocalOffset = Quaternion.Inverse(neighborGridRot) * gridOffsetVec;
+                                Vector3Int neighborLocalOffsetInt = new Vector3Int(
+                                    Mathf.RoundToInt(neighborLocalOffset.x),
+                                    Mathf.RoundToInt(neighborLocalOffset.y),
+                                    Mathf.RoundToInt(neighborLocalOffset.z)
+                                );
+
+                                // Now we¡¯re truly comparing in the neighbor¡¯s local grid
+                                if (neighborHull.validConnectionOffsets.Contains(neighborLocalOffsetInt))
                                 {
-                                    Vector3Int gridOffset = spawnPosInt - neighborPos;
+                                    var joint = newBlock.AddComponent<FixedJoint>();
+                                    joint.connectedBody = neighborRb;
+                                    joint.breakForce =
+                                        newBlock.GetComponent<Hull>().sourceBlock.connectionStrength +
+                                        neighborRb.GetComponent<Hull>().sourceBlock.connectionStrength;
 
-                                    Vector3 gridOffsetVec = gridOffset;
-                                    Quaternion neighborLocalRot = neighborRb.transform.localRotation;
-                                    Vector3 neighborLocalOffset = Quaternion.Inverse(neighborLocalRot) * gridOffsetVec;
-                                    Vector3Int neighborLocalOffsetInt = Vector3Int.RoundToInt(neighborLocalOffset);
-
-                                    if (neighborHull.validConnectionOffsets.Contains(neighborLocalOffsetInt))
-                                    {
-                                        // Debug.Log($"Connecting new block at {spawnPosInt} to neighbor at {neighborPos} (offset {offset}, opposite {neighborLocalOffsetInt}).");
-                                        var joint = newBlock.AddComponent<FixedJoint>();
-                                        joint.connectedBody = neighborRb;
-                                        // joint.breakForce = breakForce;
-                                        joint.breakForce = newBlock.transform.GetComponent<Hull>().sourceBlock.connectionStrength + neighborRb.GetComponent<Hull>().sourceBlock.connectionStrength;
-                                        
-                                        BlockManager.instance.AddConnection(spawnPosInt, neighborPos);
-                                        
-                                        
-                                        // Debug.Log($"Connected new block at {spawnPosInt} to neighbor at {neighborPos} (offset {offset}, opposite {oppositeOffset}).");
-                                    }
-                                    else
-                                    {
-                                        // Debug.Log($"Neighbor at {neighborPos} does not allow connection at offset {oppositeOffset}.");
-                                    }
+                                    BlockManager.instance.AddConnection(spawnPosInt, neighborPos);
                                 }
                             }
-                            
-                            // else
-                            // {
-                            //     Debug.LogWarning("Neighbor found at " + neighborPos + " has no Hull component.");
-                            // }
                         }
                         // else
                         // {
@@ -833,24 +862,54 @@ public class BuildSystem : MonoBehaviour
 
                 if (isSideSurface)
                 {
-                    Vector3 hitNormal = hitInfo.normal;
-                    Vector3 snappedNormal = new Vector3(
-                        Mathf.Abs(hitNormal.x) > 0.9f ? Mathf.Sign(hitNormal.x) : 0f,
-                        Mathf.Abs(hitNormal.y) > 0.9f ? Mathf.Sign(hitNormal.y) : 0f,
-                        Mathf.Abs(hitNormal.z) > 0.9f ? Mathf.Sign(hitNormal.z) : 0f
+                    // === UPDATED LOCAL SPACE LOGIC ===
+
+                    // 1. Convert World Normal to Local Normal (relative to the vehicle)
+                    Vector3 localHitNormal = commandModule.InverseTransformDirection(hitInfo.normal);
+
+                    // 2. Snap to the nearest LOCAL grid axis
+                    Vector3 localSnappedNormal = new Vector3(
+                        Mathf.Abs(localHitNormal.x) > 0.9f ? Mathf.Sign(localHitNormal.x) : 0f,
+                        Mathf.Abs(localHitNormal.y) > 0.9f ? Mathf.Sign(localHitNormal.y) : 0f,
+                        Mathf.Abs(localHitNormal.z) > 0.9f ? Mathf.Sign(localHitNormal.z) : 0f
                     );
-                    snappedNormal.Normalize();
+                    localSnappedNormal.Normalize();
 
-                    Vector3 blockAttachDir_world = referenceTransform.TransformDirection(currentBlock.attachDirection);
+                    Quaternion targetLocalRotation = Quaternion.identity;
 
-                    Quaternion toNormal_world = Quaternion.FromToRotation(blockAttachDir_world, snappedNormal);
+                    // 3. Determine Rotation Logic based on Connection Axis
+                    bool isYAxisConnection = Mathf.Abs(currentBlock.attachDirection.y) > 0.9f;
 
-                    newBlockWorldRotation = toNormal_world * referenceTransform.rotation;
-
-                    newBlockWorldRotation *= Quaternion.Euler(0f, 180f, 0f);
-                    if (currentBlock.isSideMountable && !currentBlock.isTopMountable) {
-                        newBlockWorldRotation = new Quaternion(newBlockWorldRotation.z, newBlockWorldRotation.y, newBlockWorldRotation.x, newBlockWorldRotation.w);
+                    if (isYAxisConnection && !currentBlock.isTopMountable)
+                    {
+                        Vector3 targetLocalZ = Vector3.forward; // Roll forward relative to car
+                        Vector3 targetLocalY = (currentBlock.attachDirection.y > 0) ? -localSnappedNormal : localSnappedNormal; // Connect into wall
+                        targetLocalRotation = Quaternion.LookRotation(targetLocalZ, targetLocalY);
                     }
+                    else
+                    {
+                        if (isYAxisConnection)
+                        {
+                            targetLocalRotation = Quaternion.LookRotation(Vector3.up, localSnappedNormal);
+                        }
+                        else
+                        {
+                            Quaternion toNormal = Quaternion.FromToRotation(currentBlock.attachDirection, -localSnappedNormal);
+                            targetLocalRotation = toNormal;
+
+                            if (currentBlock.isSideMountable)
+                            {
+                                Vector3 projectedUp = Vector3.ProjectOnPlane(Vector3.up, localSnappedNormal).normalized;
+                                if (projectedUp != Vector3.zero)
+                                {
+                                    targetLocalRotation = Quaternion.LookRotation(targetLocalRotation * Vector3.forward, projectedUp);
+                                }
+                            }
+                        }
+                    }
+
+                    // 4. Convert back to World Rotation
+                    newBlockWorldRotation = commandModule.rotation * targetLocalRotation;
                 }
                 else
                 {
