@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ea9861b54fd5a3a9b884dc989415243, type: 3}
+  m_Name: Saw
+  m_EditorClassIdentifier: 
+  BlockName: Saw
+  BlockObject: {fileID: 6122893040251551484, guid: 899ecd05b5bf59f4f9c0c8dc41448051, type: 3}
+  PreviewObject: {fileID: 6122893040251551484, guid: 6eefff3bbda3d4b4bb7fc641f510a8a5, type: 3}
+  isTopMountable: 1
+  isSideMountable: 1
+  isBottomMountable: 1
+  isRotatable: 0
+  isCraftable: 1
+  cost: 30
+  recycleBonus: 10
+  attachDirection: {x: 0, y: 1, z: 0}
+  blockHealth: 10
+  uiSprite: {fileID: 21300000, guid: 2b2173f89a0239b428b3a174fed18275, type: 3}
+  onlyInlinePlacement: 0
+  connectionStrength: 500
+  description: 

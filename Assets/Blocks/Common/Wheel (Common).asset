@@ -18,7 +18,7 @@ MonoBehaviour:
   isTopMountable: 0
   isSideMountable: 1
   isBottomMountable: 0
-  isRotatable: 0
+  isRotatable: 1
   isCraftable: 1
   cost: 20
   recycleBonus: 10

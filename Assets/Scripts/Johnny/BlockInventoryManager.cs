@@ -26,7 +26,6 @@ public class BlockInventoryManager : MonoBehaviour
 
     [Header("Block Inventory Setup")]
     public BlockInventoryMatrix inventoryMatrix;
-    
     private Dictionary<Block, BlockInventory> blockInventory = new Dictionary<Block, BlockInventory>();
 
     /* Awake is called when the script instance is being loaded.
@@ -47,7 +46,7 @@ public class BlockInventoryManager : MonoBehaviour
     private void InitializeInventory()
     {
         blockInventory.Clear();
-        if (inventoryMatrix == null) return;
+        if (inventoryMatrix == null || inventoryMatrix.rows == null) return;
 
         for (int r = 0; r < inventoryMatrix.rowsCount; r++)
         {
@@ -56,9 +55,18 @@ public class BlockInventoryManager : MonoBehaviour
 
             for (int c = 0; c < inventoryMatrix.columnsCount; c++)
             {
-                var bi = row.columns[c];
-                if (bi != null && bi.Block != null)
-                    blockInventory[bi.Block] = bi;
+                var template = row.columns[c];
+                if (template == null || template.Block == null)
+                    continue;
+
+                var runtimeEntry = new BlockInventory
+                {
+                    Block = template.Block,
+                    CurrentCount = template.CurrentCount,
+                    MaxStack = template.MaxStack
+                };
+
+                blockInventory.Add(runtimeEntry.Block, runtimeEntry);
             }
         }
     }

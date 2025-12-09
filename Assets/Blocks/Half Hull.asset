@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BlockName: Half Hull
   BlockObject: {fileID: 9048723453790325143, guid: 30c22c87263ec9e49bb5d809f0df79a8, type: 3}
-  PreviewObject: {fileID: 738541395469695627, guid: b3258ad08a0b8444a8efa7daee6fd3bd, type: 3}
+  PreviewObject: {fileID: 9048723453790325143, guid: ef664c6027f44384993a9e380d5e161a, type: 3}
   isTopMountable: 1
   isSideMountable: 1
   isBottomMountable: 1

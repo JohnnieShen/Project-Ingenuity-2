@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a289764fc8a9af42883de1bee601519, type: 3}
+  m_Name: BlockInventoryMatrix
+  m_EditorClassIdentifier: Assembly-CSharp::BlockInventoryMatrix
+  rowsCount: 6
+  columnsCount: 3
+  rows:
+  - columns:
+    - Block: {fileID: 11400000, guid: 4aff471f1d9cd7e4b96eecf9f3ec2404, type: 2}
+      CurrentCount: 2
+      MaxStack: 99
+    - Block: {fileID: 11400000, guid: 11348218776e5bd43b6ec3a0bc313d27, type: 2}
+      CurrentCount: 2
+      MaxStack: 99
+    - Block: {fileID: 0}
+      CurrentCount: 0
+      MaxStack: 99
+  - columns:
+    - Block: {fileID: 11400000, guid: 340f47db992718547a25f03c218311db, type: 2}
+      CurrentCount: 4
+      MaxStack: 99
+    - Block: {fileID: 0}
+      CurrentCount: 0
+      MaxStack: 99
+    - Block: {fileID: 0}
+      CurrentCount: 0
+      MaxStack: 99
+  - columns:
+    - Block: {fileID: 11400000, guid: 775b0da0a6287c94e99bb3e02faef859, type: 2}
+      CurrentCount: 2
+      MaxStack: 99
+    - Block: {fileID: 11400000, guid: 1c1c286becc170f4abee75cf8097abb4, type: 2}
+      CurrentCount: 2
+      MaxStack: 99
+    - Block: {fileID: 0}
+      CurrentCount: 0
+      MaxStack: 99
+  - columns:
+    - Block: {fileID: 11400000, guid: b207ea86d33dda94a94677e4764f7ec8, type: 2}
+      CurrentCount: 2
+      MaxStack: 99
+    - Block: {fileID: 0}
+      CurrentCount: 0
+      MaxStack: 99
+    - Block: {fileID: 0}
+      CurrentCount: 0
+      MaxStack: 99
+  - columns:
+    - Block: {fileID: 11400000, guid: 5c1e29ee64d8cae4c915e52b5ddb4261, type: 2}
+      CurrentCount: 2
+      MaxStack: 99
+    - Block: {fileID: 11400000, guid: 093337a3580ab044a944597e03a78d79, type: 2}
+      CurrentCount: 0
+      MaxStack: 99
+    - Block: {fileID: 11400000, guid: 9a685942db39e494681153557376b378, type: 2}
+      CurrentCount: 0
+      MaxStack: 99
+  - columns:
+    - Block: {fileID: 11400000, guid: 23a850e552c9ef243b0025b0c265a944, type: 2}
+      CurrentCount: 0
+      MaxStack: 99
+    - Block: {fileID: 0}
+      CurrentCount: 0
+      MaxStack: 99
+    - Block: {fileID: 0}
+      CurrentCount: 0
+      MaxStack: 99

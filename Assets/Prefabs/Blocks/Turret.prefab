@@ -5733,7 +5733,8 @@ MonoBehaviour:
   ballisticDamage: 10
   energyDamage: 1
   magazineSize: 10
-  turnSpeed: 5
+  turnSpeed: 10
+  aimTolerance: 10
   muzzleFlash: {fileID: 0}
   muzzleSpark: {fileID: 8169501708824361396}
   gunAudioSource: {fileID: 5230295931780466664}
