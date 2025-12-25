@@ -4152,7 +4152,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 1737559191}
   autoTargetPlayer: 0
-  moveSpeed: 10
+  moveSpeed: 25
   turnSpeed: 0.4
   turnsmoothing: 0.1
   tiltMax: 75

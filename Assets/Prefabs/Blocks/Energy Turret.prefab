@@ -10403,7 +10403,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 8dc874c99dca0754995b6733b13ed60f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10449,7 +10449,7 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 0, b: 0, a: 1}
+      key0: {r: 1, g: 1, b: 1, a: 1}
       key1: {r: 1, g: 1, b: 1, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
@@ -10474,7 +10474,7 @@ LineRenderer:
       atime6: 0
       atime7: 0
       m_Mode: 0
-      m_ColorSpace: 0
+      m_ColorSpace: -1
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     numCornerVertices: 0
@@ -10585,6 +10585,7 @@ MonoBehaviour:
   aimConstraints:
   - {fileID: 8933661954676186850}
   - {fileID: 8509931481967155564}
+  aimTarget: {fileID: 0}
   shootPoint: {fileID: 6305559117466502201}
   playerProjectilePrefab: {fileID: 7899788722775472648, guid: 2bde0bb2e057b3e448e66605d40d6d1c, type: 3}
   enemyProjectilePrefab: {fileID: 7899788722775472648, guid: e4bdf854dc3c3f8448380b29f6e5b87b, type: 3}
@@ -10592,6 +10593,8 @@ MonoBehaviour:
   ballisticDamage: 1
   energyDamage: 10
   magazineSize: 5
+  turnSpeed: 15
+  aimTolerance: 5
   muzzleFlash: {fileID: 0}
   muzzleSpark: {fileID: 3600580817465099857}
   gunAudioSource: {fileID: -722113273439323939}

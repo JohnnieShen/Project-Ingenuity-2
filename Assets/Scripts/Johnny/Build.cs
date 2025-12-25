@@ -234,7 +234,6 @@ public class BuildSystem : MonoBehaviour
     {
         if (buildCamera != null)
         {
-            Debug.Log("lol");
             return buildCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
         }
         return new Ray(shootingPoint.position, shootingPoint.forward);
@@ -270,6 +269,7 @@ public class BuildSystem : MonoBehaviour
             return;
         }
         BuildBlock(currentBlock.BlockObject);
+        rotationOffsetCount = 0;
     }
 
     /* OnRemovePerformed is called when the remove action is performed.

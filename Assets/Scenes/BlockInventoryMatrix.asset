@@ -17,7 +17,7 @@ MonoBehaviour:
   rows:
   - columns:
     - Block: {fileID: 11400000, guid: 4aff471f1d9cd7e4b96eecf9f3ec2404, type: 2}
-      CurrentCount: 2
+      CurrentCount: 4
       MaxStack: 99
     - Block: {fileID: 11400000, guid: 11348218776e5bd43b6ec3a0bc313d27, type: 2}
       CurrentCount: 2
