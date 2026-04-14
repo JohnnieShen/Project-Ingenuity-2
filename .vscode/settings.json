@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "cs257-Project-Ingenuity.sln"
+    "dotnet.defaultSolution": "Project-Ingenuity-2.slnx"
 }

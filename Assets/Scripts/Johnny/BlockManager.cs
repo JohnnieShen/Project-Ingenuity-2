@@ -174,6 +174,7 @@ public class BlockManager : MonoBehaviour
             {
                 // Debug.Log("Enabling physics for block " + rb.gameObject.name);
                 rb.isKinematic = false;
+                rb.WakeUp();
             }
         }
     }
@@ -325,26 +326,43 @@ public class BlockManager : MonoBehaviour
     // It also cleans up any broken joints on the blocks.
     public void recalculateConnections()
     {
+        // 1. Safety check: Ensure the vehicle/grid itself hasn't been destroyed
+        if (gridOrigin == null) return; 
+
         // First clear the current connections
         blockConnections.Clear();
+
+        // 2. Clean up any destroyed blocks from the dictionary to prevent phantom data
+        List<Vector3Int> keysToRemove = new List<Vector3Int>();
+        foreach (var kvp in blocks)
+        {
+            if (kvp.Value == null || kvp.Value.gameObject == null)
+            {
+                keysToRemove.Add(kvp.Key);
+            }
+        }
+        foreach (var key in keysToRemove)
+        {
+            blocks.Remove(key);
+        }
 
         // For each block, check if it has any joint connections and if so add them to the connections directory
         foreach (var blockEntry in blocks)
         {
-            // Debug.Log("Checking block at " + blockEntry.Key);
             Rigidbody rb = blockEntry.Value;
             if (rb == null) continue;
+
             FixedJoint[] joints = rb.GetComponents<FixedJoint>();
-            // Debug.Log("Found " + joints.Length + " connections");
             foreach (FixedJoint joint in joints)
             {
-                // Debug.Log("Joint found at " + blockEntry.Key + " connected to " + joint.connectedBody.transform.position);
-                if (joint != null && joint.connectedBody != null)
+                // 3. Robust Check: Ensure the joint, the connected Rigidbody, AND its GameObject are fully valid engine objects
+                if (joint != null && 
+                    joint.connectedBody != null && 
+                    joint.connectedBody.gameObject != null)
                 {
                     Vector3Int connectedPos = Vector3Int.RoundToInt(
                         gridOrigin.InverseTransformPoint(joint.connectedBody.transform.position) // Get the connected block's position in local space
                     );
-                    // Debug.Log("Connected from " + lockEntry.Key + " to " + connectedPos);
                     AddConnection(blockEntry.Key, connectedPos); // Add the connection to the directory
                 }
             }
