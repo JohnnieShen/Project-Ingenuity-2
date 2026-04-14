@@ -69,25 +69,28 @@ public class VehicleSaveUIManager : MonoBehaviour
         {
             string cleanName = Path.GetFileNameWithoutExtension(f.Name);
 
+            string displayName = cleanName;
+            if (displayName.Length > 10)
+            {
+                displayName = displayName.Substring(0, 10) + "...";
+            }
+
             GameObject newBtnObj = Instantiate(saveFileButtonPrefab, saveListContentParent);
             VehicleSaveEntryUI entryUI = newBtnObj.GetComponent<VehicleSaveEntryUI>();
 
             if (entryUI != null)
             {
-                // Set the text
                 if (entryUI.fileNameText != null)
                 {
-                    entryUI.fileNameText.text = cleanName;
+                    entryUI.fileNameText.text = displayName;
                 }
 
-                // Bind the Load button
                 if (entryUI.loadButton != null)
                 {
                     entryUI.loadButton.onClick.RemoveAllListeners();
                     entryUI.loadButton.onClick.AddListener(() => LoadSelectedVehicle(cleanName));
                 }
 
-                // Bind the Delete button
                 if (entryUI.deleteButton != null)
                 {
                     entryUI.deleteButton.onClick.RemoveAllListeners();
