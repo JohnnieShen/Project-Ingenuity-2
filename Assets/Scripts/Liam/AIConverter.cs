@@ -74,7 +74,7 @@ public class ConvertToAI : MonoBehaviour
 
         // Set up EnemyMovement script
         EnemyMovement enemyMovement = commandModule.AddComponent<EnemyMovement>();
-        enemyMovement.wheels = wheels.ToArray();
+        enemyMovement.wheels = wheels;
         enemyMovement.rb = commandModule.GetComponent<Rigidbody>();
 
         // Set up EnemyAI script

@@ -71,6 +71,15 @@ public class Wheel : MonoBehaviour
             return;
         }
         isLeftSide = (commandModuleTransform.InverseTransformPoint(transform.position).x < 0f);
+
+        if (isAI && commandModuleTransform != null)
+        {
+            EnemyMovement em = commandModuleTransform.GetComponent<EnemyMovement>();
+            if (em != null)
+            {
+                em.RegisterWheel(this);
+            }
+        }
     }
 
     /*
@@ -188,6 +197,18 @@ public class Wheel : MonoBehaviour
         float distanceTraveled = forwardSpeed * Time.fixedDeltaTime;
         float angleDelta = (distanceTraveled / tireRadius) * Mathf.Rad2Deg;
         tire.transform.Rotate(Vector3.right, angleDelta, Space.Self);
+    }
+
+    private void OnDestroy()
+    {
+        if (isAI && commandModuleTransform != null)
+        {
+            EnemyMovement em = commandModuleTransform.GetComponent<EnemyMovement>();
+            if (em != null)
+            {
+                em.UnregisterWheel(this);
+            }
+        }
     }
 
     /*

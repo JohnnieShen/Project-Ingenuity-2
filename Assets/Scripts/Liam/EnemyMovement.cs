@@ -26,7 +26,23 @@ public class EnemyMovement : MonoBehaviour
 
     public Transform targetPosition; // Change this for movement
     public Rigidbody rb;
-    public Wheel[] wheels;
+    public List<Wheel> wheels = new List<Wheel>();
+
+    public void RegisterWheel(Wheel wheel)
+    {
+        if (!wheels.Contains(wheel))
+        {
+            wheels.Add(wheel);
+        }
+    }
+
+    public void UnregisterWheel(Wheel wheel)
+    {
+        if (wheels.Contains(wheel))
+        {
+            wheels.Remove(wheel);
+        }
+    }
 
     public float currentDriveInput;
     public float currentSteerInput;

@@ -4442,6 +4442,7 @@ GameObject:
   - component: {fileID: 1329152618}
   - component: {fileID: 1329152617}
   - component: {fileID: 1329152619}
+  - component: {fileID: 1329152620}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -4749,6 +4750,20 @@ MonoBehaviour:
   vehicleParent: {fileID: 856457731}
   inventoryMatrix: {fileID: 11400000, guid: 34728ef010d965f4c998a371157783ba, type: 2}
   commandModule: {fileID: 1737559191}
+--- !u!114 &1329152620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1329152610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d17c4e11e8cbe224c8fb92d0089348ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AIVehicleSpawner
+  enemyCorePrefab: {fileID: 7025971033050368220, guid: 75c14ee6e48fd9c4ba2dc6ad2891d015, type: 3}
+  inventoryMatrix: {fileID: 11400000, guid: 34728ef010d965f4c998a371157783ba, type: 2}
 --- !u!1 &1369968232 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3638504164888052890, guid: 01d957f864c1038aea6081c3809c0281, type: 3}
@@ -5173,6 +5188,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1475300664}
   m_CullTransparentMesh: 1
+--- !u!1 &1565803709
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1565803711}
+  - component: {fileID: 1565803710}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1565803710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565803709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d0a6edb3748470498f6bebe1742416f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AITestSpawner
+  jsonSaveName: fuck
+  spawnPoint: {fileID: 1565803711}
+  spawnKey: 116
+--- !u!4 &1565803711
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565803709}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -20.93277, y: 15.57, z: 29.80388}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1568084683
 GameObject:
   m_ObjectHideFlags: 0
@@ -7819,3 +7881,4 @@ SceneRoots:
   - {fileID: 62485112}
   - {fileID: 1155807791}
   - {fileID: 1917894347}
+  - {fileID: 1565803711}

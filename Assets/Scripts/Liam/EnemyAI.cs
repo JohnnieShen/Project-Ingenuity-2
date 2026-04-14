@@ -28,6 +28,24 @@ public class EnemyAI : MonoBehaviour
     public Transform playerTarget;
     public EnemyMovement enemyMovement;
     public List<Turret> enemyTurrets = new List<Turret>();
+
+    public void RegisterTurret(Turret turret)
+    {
+        if (!enemyTurrets.Contains(turret))
+        {
+            enemyTurrets.Add(turret);
+            turret.SetAISpread(aiSpreadAngle);
+        }
+    }
+
+    public void UnregisterTurret(Turret turret)
+    {
+        if (enemyTurrets.Contains(turret))
+        {
+            enemyTurrets.Remove(turret);
+        }
+    }
+
     public HealthSystem healthSystem;
 
     private Vector3 patrolCenter;
@@ -82,10 +100,10 @@ public class EnemyAI : MonoBehaviour
             healthSystem = GetComponent<HealthSystem>();
         }
         InitializeAI();
-        if (enemyTurrets.Count == 0)
-            enemyTurrets.AddRange(GetComponentsInChildren<Turret>());
-        foreach (Turret t in enemyTurrets)
-            if (t != null) t.SetAISpread(aiSpreadAngle);
+        // if (enemyTurrets.Count == 0)
+        //     enemyTurrets.AddRange(GetComponentsInChildren<Turret>());
+        // foreach (Turret t in enemyTurrets)
+        //     if (t != null) t.SetAISpread(aiSpreadAngle);
         
 
         //TODO: Delay calculating until ai structure is initialized?

@@ -56,6 +56,8 @@ public class Turret : MonoBehaviour
     public bool isEnergy;
     public int ammoCost;
 
+    private EnemyAI myEnemyAI;
+
     [SerializeField] private float aiSpreadAngle = 2f;
     // public Transform aimTransform;
 
@@ -73,16 +75,21 @@ public class Turret : MonoBehaviour
             if (gameObject.GetComponent<Hull>().canPickup)
                 return;
         }
-        EnemyAI enemyAI = transform.parent.GetComponentInChildren<EnemyAI>();
-         if (enemyAI != null && enemyAI.aimTransform != null)
+        if (transform.parent != null)
         {
-            // For every AI, we have a aimTransform under the top parent, so we get that here proramatically.
-            aimTarget = enemyAI.aimTransform;
+            myEnemyAI = transform.parent.GetComponentInChildren<EnemyAI>();
+        }
+
+        if (myEnemyAI != null && myEnemyAI.aimTransform != null)
+        {
+            aimTarget = myEnemyAI.aimTransform;
             isAI = true;
+            
+            // NEW: Self-Register!
+            myEnemyAI.RegisterTurret(this);
         }
         else
         {
-            // If it's a player, there's a aimTarget under FreeCameraLook so find it there.
             aimTarget = FreeCameraLook.instance?.aimTarget;
             isAI = false;
         }
@@ -124,6 +131,11 @@ public class Turret : MonoBehaviour
         if (smoothAimPoint != null)
         {
             Destroy(smoothAimPoint.gameObject);
+        }
+
+        if (isAI && myEnemyAI != null)
+        {
+            myEnemyAI.UnregisterTurret(this);
         }
     }
 
