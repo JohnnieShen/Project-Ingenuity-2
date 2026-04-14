@@ -13,12 +13,19 @@ public class VehicleSaveSystem : MonoBehaviour
     public Transform commandModule; 
 
     private Dictionary<string, Block> blockRegistry;
+    private string playerSaveDirectory;
 
     private void Awake()
     {
         if (instance == null) instance = this;
 
         blockRegistry = new Dictionary<string, Block>();
+
+        playerSaveDirectory = Path.Combine(Application.persistentDataPath, "PlayerVehicles");
+        if (!Directory.Exists(playerSaveDirectory))
+        {
+            Directory.CreateDirectory(playerSaveDirectory);
+        }
 
         // Safely iterate through the 2D matrix to register all available blocks
         if (inventoryMatrix != null && inventoryMatrix.rows != null)
@@ -69,7 +76,7 @@ public class VehicleSaveSystem : MonoBehaviour
         }
 
         string json = JsonUtility.ToJson(saveData, true);
-        string path = Path.Combine(Application.persistentDataPath, fileName + ".json");
+        string path = Path.Combine(playerSaveDirectory, fileName + ".json");
         File.WriteAllText(path, json);
         
         Debug.Log($"Vehicle saved successfully to: {path}");
@@ -77,7 +84,7 @@ public class VehicleSaveSystem : MonoBehaviour
 
     public void LoadVehicle(string fileName)
     {
-        string path = Path.Combine(Application.persistentDataPath, fileName + ".json");
+        string path = Path.Combine(playerSaveDirectory, fileName + ".json");
         if (!File.Exists(path))
         {
             Debug.LogWarning("Save file not found at: " + path);
@@ -233,7 +240,7 @@ public class VehicleSaveSystem : MonoBehaviour
 
     public void DeleteVehicle(string fileName)
     {
-        string path = Path.Combine(Application.persistentDataPath, fileName + ".json");
+        string path = Path.Combine(playerSaveDirectory, fileName + ".json");
         if (File.Exists(path))
         {
             File.Delete(path);

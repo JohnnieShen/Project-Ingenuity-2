@@ -58,7 +58,7 @@ public class VehicleSaveUIManager : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        string path = Application.persistentDataPath;
+        string path = Path.Combine(Application.persistentDataPath, "PlayerVehicles");
         DirectoryInfo dir = new DirectoryInfo(path);
         
         if (!dir.Exists) return;

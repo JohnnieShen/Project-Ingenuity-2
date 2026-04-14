@@ -13,10 +13,17 @@ public class AIVehicleSpawner : MonoBehaviour
     private Dictionary<string, Block> blockRegistry;
     private int enemyBlockLayer;
     private int shieldLayerIndex;
+    private string aiSaveDirectory;
 
     private void Awake()
     {
         if (instance == null) instance = this;
+
+        aiSaveDirectory = Path.Combine(Application.persistentDataPath, "AIVehicles");
+        if (!Directory.Exists(aiSaveDirectory))
+        {
+            Directory.CreateDirectory(aiSaveDirectory);
+        }
 
         enemyBlockLayer = LayerMask.NameToLayer("EnemyBlock");
         shieldLayerIndex = LayerMask.NameToLayer("Shield");
@@ -41,8 +48,8 @@ public class AIVehicleSpawner : MonoBehaviour
 
     public GameObject SpawnAIVehicle(string jsonFileName, Vector3 spawnPosition, Quaternion spawnRotation)
     {
-        string path = Path.Combine(Application.persistentDataPath, jsonFileName + ".json");
-
+        string path = Path.Combine(aiSaveDirectory, jsonFileName + ".json");
+        
         if (!File.Exists(path))
         {
             Debug.LogError("AI Save file not found at: " + path);
