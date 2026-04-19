@@ -6,7 +6,7 @@ Shader "Custom/Outlines" {
     }
     SubShader {
         Tags {
-            "RenderPipeline" = "Universal" "RenderType"="Transparent" "Queue" = "Transparent+1"
+            "RenderType"="Transparent" "Queue" = "Transparent+1"
         }
         Cull Back
         Blend SrcAlpha OneMinusSrcAlpha

@@ -18,7 +18,7 @@ public class MenuManager1 : MonoBehaviour
     public void LoadGameScene()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
-        SceneManager.LoadScene("Mission Ingenuity"); 
+        SceneManager.LoadScene("Mission Ingenuity 1"); 
     }
 
     public void quitGame()

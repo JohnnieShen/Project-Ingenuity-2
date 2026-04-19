@@ -15,6 +15,9 @@ public class BlockManager : MonoBehaviour
     * The script is attached to a GameObject in the scene and requires a reference to the grid origin for calculating local positions.
     */
 
+    [Header("Inventory Data")]
+    public BlockInventoryMatrix inventoryMatrix;
+
     public static BlockManager instance;
     public Dictionary<Vector3Int, Rigidbody> blocks = new Dictionary<Vector3Int, Rigidbody>(); // Directory for storing the blocks and their positions
     // ^^^ Key is the position of the block in local space as relative to the core block, in Vector3Int as x, y, z coordinates aligned to the grid.
